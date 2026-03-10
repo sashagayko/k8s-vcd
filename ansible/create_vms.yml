@@ -1,0 +1,54 @@
+---
+- name: Create Kubernetes cluster VMs in vCD
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Create vApp for Kubernetes cluster
+      vcd_vapp:
+        host: "{{ vcd_host }}"
+        org: "{{ vcd_org }}"
+        vdc: "{{ vcd_vdc }}"
+        user: "{{ vcd_user }}"
+        password: "{{ vcd_password }}"
+        api_version: "36.0"
+        verify_ssl_certs: "{{ verify_ssl_certs }}"
+        vapp_name: "{{ vapp_name }}"
+        power_on: false
+        state: present
+
+    - name: Create VMs from template
+      vcd_vapp:
+        host: "{{ vcd_host }}"
+        org: "{{ vcd_org }}"
+        vdc: "{{ vcd_vdc }}"
+        user: "{{ vcd_user }}"
+        password: "{{ vcd_password }}"
+        api_version: "36.0"
+        verify_ssl_certs: "{{ verify_ssl_certs }}"
+        vapp_name: "{{ vapp_name }}"
+        vm_name: "{{ item.name }}"
+        template_name: "{{ template_name }}"
+        catalog_name: "{{ catalog_name }}"
+        cpus: "{{ item.cpus }}"
+        memory: "{{ item.ram }}"
+        network:
+          - name: "Local(GAYKO)"
+            ip_allocation_mode: "MANUAL"
+            ip_address: "{{ item.ip }}"
+        state: present
+      loop: "{{ cluster_nodes }}"
+
+    - name: Power on all VMs
+      vcd_vapp:
+        host: "{{ vcd_host }}"
+        org: "{{ vcd_org }}"
+        vdc: "{{ vcd_vdc }}"
+        user: "{{ vcd_user }}"
+        password: "{{ vcd_password }}"
+        api_version: "36.0"
+        verify_ssl_certs: "{{ verify_ssl_certs }}"
+        vapp_name: "{{ vapp_name }}"
+        power_on: true
+        state: present

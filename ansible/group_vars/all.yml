@@ -1,0 +1,26 @@
+---
+vcd_host: "devcloud.nces.by"
+vcd_org: "GAYKO"
+vcd_vdc: "GAYKO"
+vcd_user: "my-user"
+vcd_password: "my-pass"
+verify_ssl_certs: false
+catalog_name: "GAYKO"
+template_name: "ubuntu-template"
+vapp_name: "k8s-cluster-vapp"
+cluster_nodes:
+  - name: "control-1"
+    ip: "192.168.1.61"
+    cpus: 2
+    ram: 4096
+    role: "control"
+  - name: "worker-1"
+    ip: "192.168.1.62"
+    cpus: 2
+    ram: 4096
+    role: "worker"
+  - name: "worker-2"
+    ip: "192.168.1.63"
+    cpus: 2
+    ram: 4096
+    role: "worker"
